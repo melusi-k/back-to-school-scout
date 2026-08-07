@@ -239,8 +239,8 @@ function ChatWindow({
                   Let's get them kitted out
                 </h1>
                 <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-                  Tell me your child's age, grade and sizes and I'll match items from the school
-                  collection, suggest bundles that save, and build your checklist.
+                  Tell me your child's age, grade and sizes and I'll match items from the
+                  Ackermans school collection and build your checklist.
                 </p>
                 <div className="mt-5 flex flex-wrap justify-center gap-2">
                   {STARTERS.map((s) => (
