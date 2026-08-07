@@ -1,9 +1,12 @@
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { formatPrice } from "@/lib/catalog";
+import { createCheckout } from "@/lib/checkout.functions";
 import type { ChecklistItem } from "@/lib/threads";
-import { Trash2, ListChecks } from "lucide-react";
+import { Trash2, ListChecks, ShoppingBag, Loader2 } from "lucide-react";
 
 type Props = {
   items: ChecklistItem[];
@@ -12,6 +15,9 @@ type Props = {
 };
 
 export function ChecklistPanel({ items, onToggle, onRemove }: Props) {
+  const [checkingOut, setCheckingOut] = useState(false);
+  const fetchCheckout = useServerFn(createCheckout);
+
   const done = items.filter((i) => i.done).length;
   const total = items.reduce((sum, i) => sum + (i.done ? 0 : i.price), 0);
   const pct = items.length ? Math.round((done / items.length) * 100) : 0;
@@ -20,6 +26,23 @@ export function ChecklistPanel({ items, onToggle, onRemove }: Props) {
     (acc[item.category] ||= []).push(item);
     return acc;
   }, {});
+
+  const checkoutItems = items.filter((i) => !i.done && i.variantId);
+
+  const handleCheckout = async () => {
+    if (checkoutItems.length === 0) return;
+    setCheckingOut(true);
+    try {
+      const result = await fetchCheckout({
+        data: { items: checkoutItems.map((i) => ({ variantId: i.variantId, quantity: 1 })) },
+      });
+      if (result.checkoutUrl) {
+        window.location.href = result.checkoutUrl;
+      }
+    } catch {
+      setCheckingOut(false);
+    }
+  };
 
   return (
     <aside className="flex h-full flex-col border-border bg-card">
@@ -67,13 +90,18 @@ export function ChecklistPanel({ items, onToggle, onRemove }: Props) {
                         <span className={item.done ? "line-through opacity-50" : ""}>
                           {item.label}
                         </span>
-                        {item.note && (
+                        {item.size && (
+                          <span className="block text-xs text-muted-foreground">
+                            {item.size}
+                          </span>
+                        )}
+                        {item.note && item.note !== item.size && (
                           <span className="block text-xs text-muted-foreground">{item.note}</span>
                         )}
                       </label>
                       {item.price > 0 && (
                         <span className="mt-0.5 text-xs tabular-nums text-muted-foreground">
-                          {formatPrice(item.price)}
+                          {formatPrice(item.price, item.currencyCode || "ZAR")}
                         </span>
                       )}
                       <Button
@@ -93,6 +121,32 @@ export function ChecklistPanel({ items, onToggle, onRemove }: Props) {
           </div>
         )}
       </div>
+
+      {checkoutItems.length > 0 && (
+        <div className="border-t border-border p-4">
+          <Button
+            className="w-full gap-2"
+            onClick={handleCheckout}
+            disabled={checkingOut}
+          >
+            {checkingOut ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+                Going to checkout…
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="size-4" aria-hidden />
+                Checkout {checkoutItems.length} item{checkoutItems.length > 1 ? "s" : ""} ·{" "}
+                {formatPrice(total)}
+              </>
+            )}
+          </Button>
+          <p className="mt-2 text-center text-[11px] text-muted-foreground">
+            Opens Ackermans secure checkout
+          </p>
+        </div>
+      )}
     </aside>
   );
 }
