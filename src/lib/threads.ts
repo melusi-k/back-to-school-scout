@@ -4,10 +4,13 @@ import type { UIMessage } from "ai";
 export type ChecklistItem = {
   id: string;
   productId: string;
+  variantId: string;
   label: string;
   note: string;
   category: string;
   price: number;
+  currencyCode: string;
+  size: string;
   done: boolean;
 };
 
