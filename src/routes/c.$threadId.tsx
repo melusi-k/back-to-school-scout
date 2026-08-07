@@ -271,13 +271,6 @@ function ChatWindow({
                         </ToolBlock>
                       );
                     }
-                    if (part.type === "tool-recommend_bundles") {
-                      return (
-                        <ToolBlock key={key} part={part} title="Finding bundle savings">
-                          <BundleResults output={part.output} />
-                        </ToolBlock>
-                      );
-                    }
                     if (part.type === "tool-add_to_checklist") {
                       return (
                         <ToolBlock key={key} part={part} title="Updating your checklist">
