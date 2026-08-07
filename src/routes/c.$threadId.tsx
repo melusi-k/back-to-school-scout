@@ -49,8 +49,8 @@ export const Route = createFileRoute("/c/$threadId")({
 
 const STARTERS = [
   "My daughter is 7 and starting Grade 2",
-  "What do I need for Kindergarten?",
-  "Show me bundles for Grade 6",
+  "What do I need for Grade 4?",
+  "My son needs school shoes, he's a size 2",
 ];
 
 function ThreadPage() {
