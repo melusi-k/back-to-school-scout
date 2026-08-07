@@ -22,7 +22,7 @@ import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChecklistPanel } from "@/components/ChecklistPanel";
-import { BundleResults, ChecklistToolResult, ProductResults } from "@/components/ToolResults";
+import { ChecklistToolResult, ProductResults } from "@/components/ToolResults";
 import { useThreads, type ChecklistItem, type ChildThread } from "@/lib/threads";
 import { cn } from "@/lib/utils";
 
