@@ -33,12 +33,12 @@ export const Route = createFileRoute("/c/$threadId")({
       {
         name: "description",
         content:
-          "Chat about your child's grade and sizes, get matched school supplies and bundle savings, and track it all on a live checklist.",
+          "Chat about your child's grade and sizes, get matched school supplies from Ackermans, and track it all on a live checklist.",
       },
       { property: "og:title", content: "Your school list — Satchel" },
       {
         property: "og:description",
-        content: "Grade- and size-matched school shopping with a checklist that tracks itself.",
+        content: "Grade- and size-matched school shopping from Ackermans with a checklist that tracks itself.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
