@@ -10,13 +10,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Chat with Satchel to get grade- and size-matched school supplies, save with bundles, and track everything on one checklist.",
+          "Chat with Satchel to get grade- and size-matched school supplies from Ackermans and track everything on one checklist.",
       },
       { property: "og:title", content: "Satchel — Back-to-School Shopping Assistant" },
       {
         property: "og:description",
         content:
-          "Grade- and size-matched school shopping, bundle savings, and a checklist that tracks itself.",
+          "Grade- and size-matched school shopping from Ackermans, with a checklist that tracks itself.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

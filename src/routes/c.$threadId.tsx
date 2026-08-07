@@ -22,7 +22,7 @@ import { Tool, ToolContent, ToolHeader, ToolInput, ToolOutput } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChecklistPanel } from "@/components/ChecklistPanel";
-import { BundleResults, ChecklistToolResult, ProductResults } from "@/components/ToolResults";
+import { ChecklistToolResult, ProductResults } from "@/components/ToolResults";
 import { useThreads, type ChecklistItem, type ChildThread } from "@/lib/threads";
 import { cn } from "@/lib/utils";
 
@@ -33,12 +33,12 @@ export const Route = createFileRoute("/c/$threadId")({
       {
         name: "description",
         content:
-          "Chat about your child's grade and sizes, get matched school supplies and bundle savings, and track it all on a live checklist.",
+          "Chat about your child's grade and sizes, get matched school supplies from Ackermans, and track it all on a live checklist.",
       },
       { property: "og:title", content: "Your school list — Satchel" },
       {
         property: "og:description",
-        content: "Grade- and size-matched school shopping with a checklist that tracks itself.",
+        content: "Grade- and size-matched school shopping from Ackermans with a checklist that tracks itself.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -49,8 +49,8 @@ export const Route = createFileRoute("/c/$threadId")({
 
 const STARTERS = [
   "My daughter is 7 and starting Grade 2",
-  "What do I need for Kindergarten?",
-  "Show me bundles for Grade 6",
+  "What do I need for Grade 4?",
+  "My son needs school shoes, he's a size 2",
 ];
 
 function ThreadPage() {
@@ -239,8 +239,8 @@ function ChatWindow({
                   Let's get them kitted out
                 </h1>
                 <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
-                  Tell me your child's age, grade and sizes and I'll match items from the school
-                  collection, suggest bundles that save, and build your checklist.
+                  Tell me your child's age, grade and sizes and I'll match items from the
+                  Ackermans school collection and build your checklist.
                 </p>
                 <div className="mt-5 flex flex-wrap justify-center gap-2">
                   {STARTERS.map((s) => (
@@ -268,13 +268,6 @@ function ChatWindow({
                       return (
                         <ToolBlock key={key} part={part} title="Matching the school collection">
                           <ProductResults output={part.output} />
-                        </ToolBlock>
-                      );
-                    }
-                    if (part.type === "tool-recommend_bundles") {
-                      return (
-                        <ToolBlock key={key} part={part} title="Finding bundle savings">
-                          <BundleResults output={part.output} />
                         </ToolBlock>
                       );
                     }
