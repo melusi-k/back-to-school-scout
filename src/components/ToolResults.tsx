@@ -1,14 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/catalog";
-import { Package, Tag } from "lucide-react";
+import { Package } from "lucide-react";
+
+type VariantOut = {
+  id: string;
+  title: string;
+  price: number;
+  available: boolean;
+};
 
 type ProductOut = {
   id: string;
   title: string;
   category: string;
-  price: number;
-  sizes: string[];
   description: string;
+  image: string | null;
+  variants: VariantOut[];
 } | null;
 
 export function ProductResults({ output }: { output: unknown }) {
@@ -18,83 +25,73 @@ export function ProductResults({ output }: { output: unknown }) {
 
   return (
     <div className="grid gap-2 sm:grid-cols-2">
-      {products.map((p) => (
-        <div key={p.id} className="rounded-xl border border-border bg-card p-3">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-sm font-medium leading-snug">{p.title}</p>
-            <span className="text-sm font-semibold tabular-nums">{formatPrice(p.price)}</span>
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">{p.description}</p>
-          <div className="mt-2 flex flex-wrap gap-1">
-            <Badge variant="secondary" className="text-[10px]">
-              {p.category}
-            </Badge>
-            {p.sizes.slice(0, 3).map((s) => (
-              <Badge key={s} variant="outline" className="text-[10px]">
-                {s}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+      {products.map((p) => {
+        const available = p.variants.filter((v) => v.available);
+        const prices = available.length > 0 ? available : p.variants;
+        const minPrice = Math.min(...prices.map((v) => v.price));
+        const maxPrice = Math.max(...prices.map((v) => v.price));
+        const priceLabel =
+          minPrice === maxPrice
+            ? formatPrice(minPrice)
+            : `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`;
 
-type BundleOut = {
-  id: string;
-  title: string;
-  description: string;
-  bundlePrice: number;
-  savings: number;
-  products: ProductOut[];
-};
-
-export function BundleResults({ output }: { output: unknown }) {
-  const data = output as { bundles?: BundleOut[] } | undefined;
-  const bundles = data?.bundles ?? [];
-  if (bundles.length === 0) return null;
-
-  return (
-    <div className="space-y-2">
-      {bundles.map((b) => (
-        <div key={b.id} className="rounded-xl border border-primary/30 bg-primary/5 p-3">
-          <div className="flex items-start justify-between gap-2">
-            <p className="flex items-center gap-1.5 text-sm font-medium">
-              <Package className="size-3.5 text-primary" aria-hidden />
-              {b.title}
-            </p>
-            <span className="text-sm font-semibold tabular-nums">
-              {formatPrice(b.bundlePrice)}
-            </span>
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">{b.description}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-1">
-            {b.savings > 0 && (
-              <Badge className="gap-1 text-[10px]">
-                <Tag className="size-3" aria-hidden />
-                Save {formatPrice(b.savings)}
-              </Badge>
+        return (
+          <div key={p.id} className="flex gap-3 rounded-xl border border-border bg-card p-3">
+            {p.image && (
+              <img
+                src={p.image}
+                alt={p.title}
+                loading="lazy"
+                className="size-16 shrink-0 rounded-lg object-cover"
+              />
             )}
-            {b.products.filter(Boolean).map((p) => (
-              <Badge key={p!.id} variant="outline" className="text-[10px]">
-                {p!.title}
-              </Badge>
-            ))}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-sm font-medium leading-snug">{p.title}</p>
+                <span className="shrink-0 text-sm font-semibold tabular-nums">
+                  {priceLabel}
+                </span>
+              </div>
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                {p.description}
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1">
+                <Badge variant="secondary" className="text-[10px]">
+                  {p.category}
+                </Badge>
+                {p.variants.slice(0, 4).map((v) => (
+                  <Badge
+                    key={v.id}
+                    variant={v.available ? "outline" : "secondary"}
+                    className={`text-[10px] ${v.available ? "" : "opacity-40"}`}
+                  >
+                    {v.title.replace(/^[A-Z]+\s*\/\s*/, "")}
+                  </Badge>
+                ))}
+                {p.variants.length > 4 && (
+                  <Badge variant="outline" className="text-[10px]">
+                    +{p.variants.length - 4}
+                  </Badge>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
 
 export function ChecklistToolResult({ output }: { output: unknown }) {
-  const data = output as { items?: { id: string; label: string; note: string }[] } | undefined;
+  const data = output as { items?: { id: string; label: string; size: string }[] } | undefined;
   const items = data?.items ?? [];
   if (items.length === 0) return null;
   return (
     <p className="text-xs text-muted-foreground">
-      Added to checklist: {items.map((i) => i.label).join(", ")}
+      Added to checklist:{" "}
+      {items.map((i) => `${i.label}${i.size ? ` (${i.size})` : ""}`).join(", ")}
     </p>
   );
 }
+
+export { Package };
