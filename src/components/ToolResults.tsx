@@ -26,14 +26,20 @@ export function ProductResults({ output }: { output: unknown }) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {products.map((p) => {
-        const available = p.variants.filter((v) => v.available);
-        const prices = available.length > 0 ? available : p.variants;
-        const minPrice = Math.min(...prices.map((v) => v.price));
-        const maxPrice = Math.max(...prices.map((v) => v.price));
+        const variants = Array.isArray(p.variants) ? p.variants : [];
+        const available = variants.filter((v) => v?.available);
+        const prices = available.length > 0 ? available : variants;
+        const priceValues = prices
+          .map((v) => v?.price)
+          .filter((v): v is number => typeof v === "number");
+        const minPrice = priceValues.length ? Math.min(...priceValues) : null;
+        const maxPrice = priceValues.length ? Math.max(...priceValues) : null;
         const priceLabel =
-          minPrice === maxPrice
-            ? formatPrice(minPrice)
-            : `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`;
+          minPrice === null || maxPrice === null
+            ? ""
+            : minPrice === maxPrice
+              ? formatPrice(minPrice)
+              : `${formatPrice(minPrice)} – ${formatPrice(maxPrice)}`;
 
         return (
           <div key={p.id} className="flex gap-3 rounded-xl border border-border bg-card p-3">
