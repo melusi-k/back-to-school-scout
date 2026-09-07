@@ -65,18 +65,18 @@ export function ProductResults({ output }: { output: unknown }) {
                 <Badge variant="secondary" className="text-[10px]">
                   {p.category}
                 </Badge>
-                {p.variants.slice(0, 4).map((v) => (
+                {variants.slice(0, 4).map((v, idx) => (
                   <Badge
-                    key={v.id}
-                    variant={v.available ? "outline" : "secondary"}
-                    className={`text-[10px] ${v.available ? "" : "opacity-40"}`}
+                    key={v?.id ?? idx}
+                    variant={v?.available ? "outline" : "secondary"}
+                    className={`text-[10px] ${v?.available ? "" : "opacity-40"}`}
                   >
-                    {v.title.replace(/^[A-Z]+\s*\/\s*/, "")}
+                    {(v?.title ?? "").replace(/^[A-Z]+\s*\/\s*/, "")}
                   </Badge>
                 ))}
-                {p.variants.length > 4 && (
+                {variants.length > 4 && (
                   <Badge variant="outline" className="text-[10px]">
-                    +{p.variants.length - 4}
+                    +{variants.length - 4}
                   </Badge>
                 )}
               </div>
