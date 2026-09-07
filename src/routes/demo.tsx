@@ -28,14 +28,14 @@ function DemoPage() {
     const script = document.createElement("script");
     script.src = "/scout-widget.js";
     script.defer = true;
-    script.dataset.label = "Back to School Scout";
+    script.setAttribute("data-label", "Back to School Scout");
     document.body.appendChild(script);
     return () => {
       script.remove();
       document.querySelector(".satchel-scout-frame")?.remove();
       document.querySelector(".satchel-scout-launcher")?.remove();
       // allow re-injection on next mount
-      (window as unknown as Record<string, unknown>).__satchelScoutLoaded = false;
+      (window as unknown as Record<string, unknown>)["__satchelScoutLoaded"] = false;
     };
   }, []);
 
